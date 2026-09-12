@@ -1,0 +1,87 @@
+@startuml DomainModel
+
+' Enums
+enum OrderStatus {
+    PENDING
+    PAID
+    SHIPPED
+}
+
+enum ProductType {
+    STANDARD
+    CUSTOM
+}
+
+' Klasser
+class Customer {
+    - String name
+    - String email
+    - String password
+}
+
+class Order {
+    - LocalDateTime orderDate
+    - OrderStatus status
+    - String deliveryStreet
+    - String deliveryZipCode
+    - String deliveryCity
+}
+
+class OrderItem {
+    - int quantity
+    - double unitPriceAtPurchase
+}
+
+class Cart {
+    + double getTotalPrice()
+}
+
+class CartItem {
+    - int quantity
+}
+
+abstract class Product {
+    - String name
+    - ProductType productType
+}
+
+class StandardProduct {
+    - double price
+}
+
+class CustomProduct {
+    - double laborCost
+    - double hiddenMargin
+}
+
+class Category {
+    - Long id
+    - String name
+}
+
+class Variant {
+    - Long id
+    - String name
+    - double priceExtra
+}
+
+' Arv (Inheritance)
+Product <|-- StandardProduct
+Product <|-- CustomProduct
+
+' Relationer
+Customer "1" -- "0..*" Order : placerer
+Order "*" --> "1" Customer : tilhører
+Order "*" --> "1" OrderStatus : har tilstand
+
+Cart "1" *-- "0..*" CartItem : indeholder
+CartItem "*" --> "1" Product : refererer til
+
+Order "1" *-- "1..*" OrderItem : indeholder
+OrderItem "*" --> "1" Product : refererer til
+
+Customer "1" -- "0..1" Cart : ejer
+Product "*" --> "0..1" Category : tilhører
+CustomProduct "*" o-- "*" Variant : benytter materialer
+
+@enduml
