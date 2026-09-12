@@ -1,27 +1,133 @@
-@startuml
-'https://plantuml.com/class-diagram
+@startuml ClassDiagram
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
-
-List <|-- AbstractList
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
+enum OrderStatus {
+    PENDING
+    PAID
+    SHIPPED
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
+enum ProductType {
+    STANDARD
+    CUSTOM
 }
+
+enum Role {
+    CUSTOMER
+    ADMIN
+}
+
+class Customer {
+    - Long id
+    - String name
+    - String email
+    - String password
+    - Role role
+    + registrer()
+}
+
+class AuthService {
+    + login(email, password)
+}
+
+class Order {
+    - Long id
+    - LocalDateTime orderDate
+    - OrderStatus status
+    - String deliveryStreet
+    - String deliveryZipCode
+    - String deliveryCity
+    + hentStatus()
+    + opdaterStatus(nyStatus)
+}
+
+class OrderService {
+    + hentBetalteOrdrer()
+}
+
+class OrderItem {
+    - Long id
+    - int quantity
+    - double unitPriceAtPurchase
+}
+
+class Cart {
+    - Long id
+    + tilfoejVare(variant, antal)
+    + getTotalPrice()
+}
+
+class CartItem {
+    - Long id
+    - int quantity
+    + getSubtotal()
+}
+
+abstract class Product {
+    - Long id
+    - String name
+    - ProductType productType
+    + opretProdukt(kategori, navn)
+    + slet()
+    + {abstract} calculatePrice()
+}
+
+class StandardProduct {
+    - double price
+    + calculatePrice()
+}
+
+class CustomProduct {
+    - double laborCost
+    - double hiddenMargin
+    + calculatePrice()
+}
+
+class ProductService {
+    + hentProdukterEfterKategori(kategori)
+    + hentVarerPaaTilbud()
+}
+
+class Category {
+    - Long id
+    - String name
+    + opretKategori(navn)
+}
+
+class Variant {
+    - Long id
+    - String name
+    - double priceExtra
+    - double pris
+    - int lager
+    - boolean paaTilbud
+    + opdaterPris(nyPris)
+    + opdaterLager(antal)
+    + saetPaaTilbud(nedsatPris)
+    + slet()
+}
+
+class BetalingService {
+    + gennemfoerBetaling(kurv)
+}
+
+' Arv
+Product <|-- StandardProduct
+Product <|-- CustomProduct
+
+' Simple forbindelser (uden multiplicitet)
+Customer -- Order
+Customer -- Cart
+Cart -- CartItem
+CartItem -- Variant
+Order -- OrderItem
+OrderItem -- Variant
+Product -- Category
+CustomProduct -- Variant
+
+' Services der bruger app.entities
+AuthService ..> Customer
+OrderService ..> Order
+ProductService ..> Product
+BetalingService ..> Order
 
 @enduml
