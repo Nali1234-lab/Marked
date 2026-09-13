@@ -1,0 +1,81 @@
+@startuml MarkedDomainModel
+
+enum OrderStatus {
+  PENDING
+  PAID
+}
+
+class Customer {
+  - name: String
+  - email: String
+  - password: String
+}
+
+class Order {
+  - orderDate: LocalDateTime
+  - status: OrderStatus
+  - deliveryStreet: String
+  - deliveryZipCode: String
+  - deliveryCity: String
+}
+
+class OrderItem {
+  - quantity: int
+  - unitPriceAtPurchase: double
+}
+
+class Cart {
+}
+
+class CartItem {
+  - quantity: int
+}
+
+abstract class Product {
+  - name: String
+  + calculatePrice(): double
+}
+
+class StandardProduct {
+  - price: double
+}
+
+class CustomProduct {
+  - laborCost: double
+  - hiddenMargin: double
+}
+
+class Category {
+  - name: String
+}
+
+class Variant {
+  - name: String
+  - price: double
+  - stock: int
+  - onSale: boolean
+}
+
+' ===== RELATIONS (som i din seneste domænemodel) =====
+Customer "1" -- "0..*" Order : tilhører
+Customer "1" -- "0..1" Cart : ejer
+
+Order "1" *-- "1..*" OrderItem : indeholder
+OrderItem "*" --> "1" Variant : refererer til
+
+Cart "1" *-- "0..*" CartItem : indeholder
+CartItem "*" --> "1" Variant : refererer til
+
+Variant "*" --> "1" Product : er variant af
+
+Product <|-- StandardProduct : arver
+Product <|-- CustomProduct : arver
+
+Product "*" --> "1" Category : tilhører
+' RETTET (aftalt): var "0..1", er nu obligatorisk - hvert produkt SKAL tilhøre en kategori
+
+CustomProduct "*" o-- "*" Variant : benytter materialer
+' GENINDFØRT (aftalt): kunden vælger fx stof/farve (eksisterende varianter) som
+' materialer til sit selv-designede produkt (fx "damekjole")
+
+@enduml

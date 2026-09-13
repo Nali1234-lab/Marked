@@ -1,0 +1,164 @@
+@startuml MarkedClassDiagram
+
+' ===== ENUMS =====
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+}
+
+' ===== ENTITIES =====
+class Customer {
+  - name: String
+  - email: String
+  - password: String
+  - role: Role
+}
+
+class Order {
+  - orderDate: LocalDateTime
+  - status: OrderStatus
+  - deliveryStreet: String
+  - deliveryZipCode: String
+  - deliveryCity: String
+}
+
+class OrderItem {
+  - quantity: int
+  - unitPriceAtPurchase: double
+}
+
+class Cart {
+}
+
+class CartItem {
+  - quantity: int
+}
+
+abstract class Product {
+  - name: String
+  + calculatePrice(): double
+}
+
+class StandardProduct {
+  - price: double
+}
+
+class CustomProduct {
+  - laborCost: double
+  - hiddenMargin: double
+}
+
+class Category {
+  - name: String
+}
+
+class Variant {
+  - name: String
+  - price: double
+  - stock: int
+  - onSale: boolean
+}
+
+' ===== SERVICES =====
+class AuthService {
+  + register(name, email, password): Customer
+  + login(email, password): Customer
+}
+
+class CustomerService {
+  + getCustomerById(id): Customer
+  + updateCustomer(customer): void
+}
+
+class OrderService {
+  + opretOrder(customer, cart): Order
+  + hentOrdreStatus(orderId): OrderStatus
+  + hentKundesOrdrer(customerId): List<Order>
+  + hentAlleBetalteOrdrer(): List<Order>
+  + opdaterStatus(orderId, newStatus): void
+}
+
+class BetalingService {
+  + gennemførBetaling(order): boolean
+  + validérBetaling(order): boolean
+}
+
+class CartService {
+  + tilføjVareTilKurv(customer, variant, qty): void
+  + fjernVaraFraKurv(customer, variantId): void
+  + tømKurv(customer): void
+  + hentKurv(customer): Cart
+}
+
+class VariantService {
+  + hentVariantEfterProdukt(produktId): List<Variant>
+  + opretVariant(produktId, navn, price, stock): Variant
+  ' RETTET: manglede - admin kan oprette produkt, men ikke tilføje varianter til det.
+  + opdaterPris(variantId, pris): void
+  + opdaterLager(variantId, antal): void
+  + sletVariant(variantId): void
+  + sætPåTilbud(variantId, onSale): void
+}
+
+class ProductService {
+  + hentProdukterEfterKategori(katId): List<Product>
+  + hentAlleProduker(): List<Product>
+  + hentVarerPåTilbud(): List<Variant>
+  + opretStandardProdukt(kategori, navn, price): StandardProduct
+  + opretCustomProdukt(kategori, navn, laborCost, hiddenMargin): CustomProduct
+  ' RETTET: opretProdukt() var for generisk ift. user stories -
+  ' custom-produkter har andre felter (laborCost/hiddenMargin) end standard (price).
+  + sletProdukt(produktId): void
+}
+
+class CategoryService {
+  + hentAlleKategorier(): List<Category>
+  + opretKategori(navn): Category
+  + sletKategori(kategoriId): void
+}
+
+' ===== RELATIONS =====
+AuthService ..> Customer : opererer på
+CustomerService ..> Customer : opererer på
+
+Customer "1" -- "0..*" Order : tilhører
+Customer "1" -- "0..1" Cart : ejer
+
+Order "1" *-- "1..*" OrderItem : indeholder
+OrderItem "*" --> "1" Variant : refererer til
+
+Cart "1" *-- "0..*" CartItem : indeholder
+CartItem "*" --> "1" Variant : refererer til
+
+Variant "*" --> "1" Product : er variant af
+Product <|-- StandardProduct : arver
+Product <|-- CustomProduct : arver
+Product "*" --> "1" Category : tilhører
+' RETTET (aftalt): var "0..1", er nu obligatorisk
+
+CustomProduct "*" o-- "*" Variant : benytter materialer
+' GENINDFØRT (aftalt): custom-produkter (fx "damekjole") sammensættes af
+' kundens valgte materiale-varianter (stof, farve osv.)
+
+OrderService ..> Order : opererer på
+OrderService ..> OrderStatus : opererer på
+OrderService ..> OrderItem : opererer på
+BetalingService ..> Order : opererer på
+
+CartService ..> Cart : opererer på
+CartService ..> CartItem : opererer på
+CartService ..> Variant : opererer på
+
+VariantService ..> Variant : opererer på
+ProductService ..> Product : opererer på
+ProductService ..> StandardProduct : opererer på
+ProductService ..> CustomProduct : opererer på
+ProductService ..> Category : opererer på
+CategoryService ..> Category : opererer på
+
+@enduml

@@ -1,0 +1,84 @@
+@startuml MarkedDomain
+
+' Enums
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+}
+
+enum ProductType {
+  STANDARD
+  CUSTOM
+}
+
+' Entities
+class Customer {
+  - name: String
+  - email: String
+  - password: String
+  - role: Role
+}
+
+class Order {
+  - orderDate: LocalDateTime
+  - status: OrderStatus
+  - deliveryStreet: String
+  - deliveryZipCode: String
+  - deliveryCity: String
+}
+
+class OrderItem {
+  - quantity: int
+  - unitPriceAtPurchase: double
+}
+
+class Cart {
+}
+
+class CartItem {
+  - quantity: int
+}
+
+class Category {
+  - name: String
+}
+
+class Product {
+  - name: String
+  + calculatePrice(): double
+}
+
+class StandardProduct {
+  - price: double
+}
+
+class CustomProduct {
+  - laborCost: double
+  - hiddenMargin: double
+}
+
+class Variant {
+  - name: String
+  - price: double
+  - stock: int
+  - onSale: boolean
+}
+
+' Relationships
+Customer "1" --> "0..1" Cart : ejer
+Customer "1" --> "*" Order : tilhører
+Order "1" --> "*" OrderItem : indeholder
+OrderItem "*" --> "1" Variant : refererer til
+Cart "1" --> "*" CartItem : indeholder
+CartItem "*" --> "1" Variant : refererer til
+Variant "*" --> "1" Product : er variant af
+Product "1" --> "1" Category : tilhører
+Product <|-- StandardProduct : arver
+Product <|-- CustomProduct : arver
+
+@enduml

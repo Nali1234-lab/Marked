@@ -1,5 +1,5 @@
 package app.entities;
 
 public enum OrderStatus {
-    PENDING , PAID
+    PENDING , PAID , DONE
 }

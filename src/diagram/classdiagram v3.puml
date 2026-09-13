@@ -1,0 +1,147 @@
+@startuml MarkedClassDiagram
+
+' ===== ENUMS =====
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+}
+
+' ===== ENTITIES =====
+class Customer {
+  - name: String
+  - email: String
+  - password: String
+  - role: Role
+}
+
+class Order {
+  - orderDate: LocalDateTime
+  - status: OrderStatus
+  - deliveryStreet: String
+  - deliveryZipCode: String
+  - deliveryCity: String
+}
+
+class OrderItem {
+  - quantity: int
+  - unitPriceAtPurchase: double
+}
+
+class Cart {
+}
+
+class CartItem {
+  - quantity: int
+}
+
+abstract class Product {
+  - name: String
+  + calculatePrice(): double
+}
+
+class StandardProduct {
+  - price: double
+}
+
+class CustomProduct {
+  - laborCost: double
+  - hiddenMargin: double
+}
+
+class Category {
+  - name: String
+}
+
+class Variant {
+  - name: String
+  - price: double
+  - stock: int
+  - onSale: boolean
+}
+
+' ===== SERVICES (forenklet fra 8 til 4) =====
+class AuthService {
+  + register(name, email, password): Customer
+  + login(email, password): Customer
+  + getCustomerById(id): Customer
+  + updateCustomer(customer): void
+}
+' SLÅET SAMMEN: tidligere AuthService + CustomerService
+
+class CatalogService {
+  + hentAlleKategorier(): List<Category>
+  + opretKategori(navn): Category
+  + sletKategori(kategoriId): void
+  + hentProdukterEfterKategori(katId): List<Product>
+  + hentAlleProduker(): List<Product>
+  + opretStandardProdukt(kategori, navn, price): StandardProduct
+  + opretCustomProdukt(kategori, navn, laborCost, hiddenMargin): CustomProduct
+  + sletProdukt(produktId): void
+  + hentVariantEfterProdukt(produktId): List<Variant>
+  + opretVariant(produktId, navn, price, stock): Variant
+  + opdaterPris(variantId, pris): void
+  + opdaterLager(variantId, antal): void
+  + sletVariant(variantId): void
+  + sætPåTilbud(variantId, onSale): void
+  + hentVarerPåTilbud(): List<Variant>
+}
+' SLÅET SAMMEN: tidligere CategoryService + ProductService + VariantService
+' (kategori -> produkt -> variant hænger naturligt sammen som "kataloget")
+
+class CartService {
+  + tilføjVareTilKurv(customer, variant, qty): void
+  + fjernVaraFraKurv(customer, variantId): void
+  + tømKurv(customer): void
+  + hentKurv(customer): Cart
+}
+
+class OrderService {
+  + opretOrder(customer, cart): Order
+  + gennemførBetaling(order): boolean
+  + validérBetaling(order): boolean
+  + hentOrdreStatus(orderId): OrderStatus
+  + hentKundesOrdrer(customerId): List<Order>
+  + hentAlleBetalteOrdrer(): List<Order>
+  + opdaterStatus(orderId, newStatus): void
+}
+' SLÅET SAMMEN: tidligere OrderService + BetalingService
+
+' ===== RELATIONS =====
+AuthService ..> Customer : opererer på
+
+Customer "1" -- "0..*" Order : tilhører
+Customer "1" -- "0..1" Cart : ejer
+
+Order "1" *-- "1..*" OrderItem : indeholder
+OrderItem "*" --> "1" Variant : refererer til
+
+Cart "1" *-- "0..*" CartItem : indeholder
+CartItem "*" --> "1" Variant : refererer til
+
+Variant "*" --> "1" Product : er variant af
+Product <|-- StandardProduct : arver
+Product <|-- CustomProduct : arver
+Product "*" --> "1" Category : tilhører
+
+CustomProduct "*" o-- "*" Variant : benytter materialer
+
+OrderService ..> Order : opererer på
+OrderService ..> OrderStatus : opererer på
+OrderService ..> OrderItem : opererer på
+
+CartService ..> Cart : opererer på
+CartService ..> CartItem : opererer på
+CartService ..> Variant : opererer på
+
+CatalogService ..> Product : opererer på
+CatalogService ..> StandardProduct : opererer på
+CatalogService ..> CustomProduct : opererer på
+CatalogService ..> Category : opererer på
+CatalogService ..> Variant : opererer på
+
+@enduml

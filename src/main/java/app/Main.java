@@ -24,8 +24,8 @@ public class Main {
 
         List<Customer> alle = customerDAO.getAll();
         System.out.println("Antal kunder: " + alle.size());
-        AddressApiService addressApiService = new AddressApiService();
 
+        AddressApiService addressApiService = new AddressApiService();
         boolean gyldig1 = addressApiService.isValidPostalCode("2200", "København N");
         System.out.println("2200 + København N gyldig? " + gyldig1);
 

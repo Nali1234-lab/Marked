@@ -1,0 +1,156 @@
+@startuml MarkedUserStoriesDiagram
+
+' ==================== ENUMS ====================
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+}
+
+' ==================== ENTITIES ====================
+class Customer {
+  - name: String
+  - email: String
+  - password: String
+  - role: Role
+}
+
+class Order {
+  - orderDate: LocalDateTime
+  - status: OrderStatus
+  - deliveryStreet: String
+  - deliveryZipCode: String
+  - deliveryCity: String
+}
+
+class OrderItem {
+  - quantity: int
+  - unitPriceAtPurchase: double
+}
+
+class Cart {
+}
+
+class CartItem {
+  - quantity: int
+}
+
+class Category {
+  - name: String
+}
+
+class Product {
+  - name: String
+  + calculatePrice(): double
+}
+
+class StandardProduct {
+  - price: double
+}
+
+class CustomProduct {
+  - laborCost: double
+  - hiddenMargin: double
+}
+
+class Variant {
+  - name: String
+  - price: double
+  - stock: int
+  - onSale: boolean
+}
+
+' ==================== SERVICES ====================
+class AuthService {
+  + register(name, email, password): Customer
+  + login(email, password): Customer
+}
+
+class CustomerService {
+  + getCustomerById(id): Customer
+  + updateCustomer(customer): void
+}
+
+class ProductService {
+  + hentProdukterEfterKategori(katId): List<Product>
+  + hentAlleProduker(): List<Product>
+  + hentVarerPåTilbud(): List<Variant>
+  + opretProdukt(kategori, navn): Product
+  + sletProdukt(produktId): void
+}
+
+class CategoryService {
+  + hentAlleKategorier(): List<Category>
+  + opretKategori(name): Category
+  + sletKategori(kategorId): void
+}
+
+class VariantService {
+  + hentVariantEfterProdukt(produktId): List<Variant>
+  + opdaterPris(variantId, pris): void
+  + opdaterLager(variantId, antal): void
+  + sletVariant(variantId): void
+  + sætPåTilbud(variantId, onSale): void
+}
+
+class CartService {
+  + tilføjVareTilKurv(customer, variant, qty): void
+  + fjernVaraFraKurv(customer, variantId): void
+  + tømKurv(customer): void
+  + hentKurv(customer): Cart
+}
+
+class OrderService {
+  + opretOrder(customer, cart): Order
+  + hentOrdreStatus(orderId): OrderStatus
+  + hentKundesOrdrer(customerId): List<Order>
+  + hentAlleBetalteOrdrer(): List<Order>
+  + opdaterStatus(orderId, newStatus): void
+}
+
+class BetalingService {
+  + gennemførBetaling(order): boolean
+  + validérBetaling(order): boolean
+}
+
+' ==================== RELATIONSHIPS ====================
+
+' Customer relationships
+Customer "1" --> "0..1" Cart : ejer
+Customer "1" --> "0..*" Order : tilhører
+
+' Cart relationships
+Cart "1" --> "*" CartItem : indeholder
+CartItem "*" --> "1" Variant : refererer til
+
+' Order relationships
+Order "1" --> "*" OrderItem : indeholder
+OrderItem "*" --> "1" Variant : refererer til
+
+' Product relationships
+Variant "*" --> "1" Product : er variant af
+Product "*" --> "1" Category : tilhører
+Product <|-- StandardProduct : arver
+Product <|-- CustomProduct : arver
+
+' Service relationships (bruges af/opererer på)
+AuthService ..> Customer : opererer på
+CustomerService ..> Customer : opererer på
+ProductService ..> Product : opererer på
+ProductService ..> Variant : opererer på
+ProductService ..> Category : opererer på
+CategoryService ..> Category : opererer på
+VariantService ..> Variant : opererer på
+CartService ..> Cart : opererer på
+CartService ..> CartItem : opererer på
+CartService ..> Variant : opererer på
+OrderService ..> Order : opererer på
+OrderService ..> OrderItem : opererer på
+OrderService ..> OrderStatus : opererer på
+BetalingService ..> Order : opererer på
+
+@enduml
