@@ -70,4 +70,13 @@ public class VariantDAO implements IDAO<Variant, Long> {
                     .getResultList();
         }
     }
+    // Matcher: "kunde vil kunne vælge en variant af det valgte produkt"
+    public List<Variant> getByProductId(Long productId) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery(
+                            "SELECT v FROM Variant v WHERE v.product.id = :productId", Variant.class)
+                    .setParameter("productId", productId)
+                    .getResultList();
+        }
+    }
 }

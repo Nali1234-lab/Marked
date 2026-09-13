@@ -61,4 +61,14 @@ public class CustomerDAO implements IDAO<Customer, Long> {
             em.getTransaction().commit();
         }
     }
+    // Matcher: "kunde vil kunne logge ind" (login sker via email, ikke id)
+    public Customer getByEmail(String email) {
+        try (EntityManager em = emf.createEntityManager()) {
+            List<Customer> result = em.createQuery(
+                            "SELECT c FROM Customer c WHERE c.email = :email", Customer.class)
+                    .setParameter("email", email)
+                    .getResultList();
+            return result.isEmpty() ? null : result.get(0);
+        }
+    }
 }
