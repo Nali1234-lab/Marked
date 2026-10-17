@@ -1,4 +1,4 @@
-package app.services;
+/*package app.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import app.dto.AddressDTO;
@@ -34,4 +34,4 @@ public class AddressApiService {
         AddressDTO dto = mapper.readValue(response.body(), AddressDTO.class);
         return dto.navn().equalsIgnoreCase(by);
     }
-}
+}*/

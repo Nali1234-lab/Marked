@@ -1,4 +1,4 @@
-package app;
+/*package app;
 
 import app.config.HibernateConfig;
 import app.dao.CustomerDAO;
@@ -36,4 +36,4 @@ public class Main {
         System.out.println("9999 + Ingenting gyldig? " + gyldig3);
 
     }
-}
+*/
