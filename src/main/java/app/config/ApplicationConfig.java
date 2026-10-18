@@ -1,17 +1,16 @@
 package app.config;
 
+import app.exceptions.ApiException;
+import app.routes.Routes;
+import app.utils.JwtUtil;
 import io.javalin.Javalin;
-import io.javalin.apibuilder.EndpointGroup;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ApplicationConfig {
 
     private static ApplicationConfig instance;
     private static Javalin app;
+    private static Routes routes = new Routes();
 
-    private final List<EndpointGroup> routeGroups = new ArrayList<>();
     private boolean generalExceptionHandling = false;
     private boolean cors = false;
 
@@ -25,12 +24,6 @@ public class ApplicationConfig {
     }
 
     public ApplicationConfig initiateServer() {
-        // Markerer at serveren skal oprettes. Selve oprettelsen sker i startServer()
-        return this;
-    }
-
-    public ApplicationConfig setRoute(EndpointGroup group) {
-        routeGroups.add(group);
         return this;
     }
 
@@ -45,21 +38,19 @@ public class ApplicationConfig {
     }
 
     public ApplicationConfig startServer(int port) {
-        // NU bygges Javalin med alle de opsamlede routes
         app = Javalin.create(config -> {
-            config.router.apiBuilder(() -> {
-                for (EndpointGroup group : routeGroups) {
-                    group.addEndpoints();
-                }
-            });
+            config.router.contextPath = "/api"; // Base path
+            config.router.apiBuilder(routes.getRoutes());
         });
-        // SPECIFIK først — ApiException → korrekt HTTP-kode
-        app.exception(app.exceptions.ApiException.class, (e, ctx) -> {
+
+        // 1. Exception handlers
+        app.exception(ApiException.class, (e, ctx) -> {
             ctx.status(e.getCode()).json(java.util.Map.of(
                     "status", e.getCode(),
                     "msg", e.getMessage()
             ));
         });
+
         if (generalExceptionHandling) {
             app.exception(Exception.class, (e, ctx) -> {
                 e.printStackTrace();
@@ -70,6 +61,7 @@ public class ApplicationConfig {
             });
         }
 
+        // 2. CORS
         if (cors) {
             app.before(ctx -> {
                 ctx.header("Access-Control-Allow-Origin", "*");
@@ -77,6 +69,44 @@ public class ApplicationConfig {
                 ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
             });
         }
+
+        // 3. Auth middleware
+        app.before(ctx -> {
+            String path = ctx.path();
+
+            // Strip "/api" fra stien, så vi kan tjekke uden contextPath
+            if (path.startsWith("/api")) {
+                path = path.substring("/api".length());
+            }
+
+            String method = ctx.method().name();
+
+            // Ignorer OPTIONS (CORS preflight)
+            if (method.equals("OPTIONS")) return;
+
+            // Offentlige endpoints
+            boolean isPublic =
+                    path.equals("/health") ||
+                            path.equals("/auth/register") ||
+                            path.equals("/auth/login") ||
+                            (path.startsWith("/products") && method.equals("GET")) ||
+                            (path.startsWith("/custom-products/") && path.endsWith("/preview") && method.equals("POST"));
+
+            if (isPublic) return;
+
+            // Alt andet kræver et gyldigt JWT-token
+            String authHeader = ctx.header("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                throw new ApiException(401, "Authorization header mangler eller er ugyldig");
+            }
+            String token = authHeader.substring("Bearer ".length());
+
+            Long customerId = JwtUtil.getCustomerId(token);
+            String role = JwtUtil.getRole(token);
+
+            ctx.attribute("customerId", customerId);
+            ctx.attribute("role", role);
+        });
 
         app.start(port);
         return this;

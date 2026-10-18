@@ -1,5 +1,4 @@
 package app.dto;
-
 import java.util.List;
 
 public record DesignPreviewResponse(
@@ -7,4 +6,6 @@ public record DesignPreviewResponse(
         String productName,
         List<String> selectedOptions,
         double finalPrice
-) {}
+) {
+
+}

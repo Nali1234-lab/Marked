@@ -1,8 +1,88 @@
-### Preview: T-shirt med Rød + Bomuld
-POST http://localhost:7070/api/custom-products/7/preview
+### Login
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ali@test.dk",
+  "password": "hemmelig123"
+}
+### Login
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ali@test.dk",
+  "password": "hemmelig123"
+}
+
+### 2. GET /api/customers/me MED token
+GET http://localhost:7070/api/customers/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTIzNjA4NzUsImV4cCI6MTc5MjM2NDQ3NX0.65NWC-El6pglorqF450z-Pbl9bi5J6-Tr6bMhFcS0Xw
+
+### 3. GET /api/customers/3 UDEN token (forvent 401 — beskyttet nu)
+GET http://localhost:7070/api/customers/3
+
+### 4. GET /api/products (forvent 200 — stadig offentlig)
+GET http://localhost:7070/api/products
+
+### 5. GET /api/health (forvent 200 — stadig offentlig)
+GET http://localhost:7070/api/health
+
+### Login
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ali@test.dk",
+  "password": "hemmelig123"
+}
+
+### 7. Gem konfiguration UDEN token (forvent 401)
+POST http://localhost:7070/api/custom-products/7/configure
 Content-Type: application/json
 
 {
   "colorId": 1,
-  "materialId": 4
+  "materialId": 4,
+  "quantity": 2
+}
+
+### 8. Gem konfiguration MED token (forvent 201)
+POST http://localhost:7070/api/custom-products/7/configure
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTIzNjIwNTIsImV4cCI6MTc5MjM2NTY1Mn0.Ct3q-NeoGYrpsUKYgEUlKJmVSC9S0f0Mud2VtAQVKro
+Content-Type: application/json
+
+{
+  "colorId": 1,
+  "materialId": 4,
+  "quantity": 2
+}
+
+###
+GET http://localhost:7070/api/health
+###
+GET http://localhost:7070/api/products
+
+###
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ali@test.dk",
+  "password": "hemmelig123"
+}
+
+
+###
+GET http://localhost:7070/api/customers/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTIzNjU5MjcsImV4cCI6MTc5MjM2OTUyN30.YXdiQ2r6eDnideBmkm-lQiPcVX91jthE3wrIW0LLrWU
+
+###
+POST http://localhost:7070/api/cart/items
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTIzNjU5MjcsImV4cCI6MTc5MjM2OTUyN30.YXdiQ2r6eDnideBmkm-lQiPcVX91jthE3wrIW0LLrWU
+Content-Type: application/json
+
+{
+  "configurationId": 1,
+  "quantity": 2
 }

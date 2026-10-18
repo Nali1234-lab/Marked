@@ -2,10 +2,12 @@ package app.services;
 
 import app.dao.CartDAO;
 import app.dao.CartItemDAO;
+import app.dao.ProductConfigurationDAO;
 import app.dao.VariantDAO;
 import app.entities.Cart;
 import app.entities.CartItem;
 import app.entities.Customer;
+import app.entities.ProductConfiguration;
 import app.entities.Variant;
 import app.exceptions.ApiException;
 
@@ -14,11 +16,13 @@ public class CartService {
     private final CartDAO cartDAO;
     private final CartItemDAO cartItemDAO;
     private final VariantDAO variantDAO;
+    private final ProductConfigurationDAO configDAO;
 
     public CartService() {
         this.cartDAO = new CartDAO();
         this.cartItemDAO = new CartItemDAO();
         this.variantDAO = new VariantDAO();
+        this.configDAO = new ProductConfigurationDAO();
     }
 
     // "customer wants to add a variant to their cart"
@@ -33,9 +37,8 @@ public class CartService {
 
         Cart cart = getCart(customer);
 
-        // Does the customer already have this variant in their cart? Increase quantity instead of duplicating.
         CartItem existing = cart.getCartItems().stream()
-                .filter(item -> item.getVariant().getId().equals(variantId))
+                .filter(item -> item.getVariant() != null && item.getVariant().getId().equals(variantId))
                 .findFirst()
                 .orElse(null);
 
@@ -51,12 +54,37 @@ public class CartService {
         }
     }
 
-    // "customer wants to remove an item from their cart"
+    // NY: Tilføj en gemt konfiguration til kurven
+    public void addConfigurationToCart(Customer customer, Long configurationId, int qty) {
+        ProductConfiguration config = configDAO.getById(configurationId);
+        if (config == null) {
+            throw new ApiException(404, "Konfiguration ikke fundet med id: " + configurationId);
+        }
+
+        Cart cart = getCart(customer);
+
+        CartItem existing = cart.getCartItems().stream()
+                .filter(item -> item.getConfiguration() != null && item.getConfiguration().getId().equals(configurationId))
+                .findFirst()
+                .orElse(null);
+
+        if (existing != null) {
+            existing.setQuantity(existing.getQuantity() + qty);
+            cartItemDAO.update(existing);
+        } else {
+            CartItem newItem = new CartItem();
+            newItem.setCart(cart);
+            newItem.setConfiguration(config);
+            newItem.setQuantity(qty);
+            cartItemDAO.create(newItem);
+        }
+    }
+
     public void removeItemFromCart(Customer customer, Long variantId) {
         Cart cart = getCart(customer);
 
         CartItem item = cart.getCartItems().stream()
-                .filter(i -> i.getVariant().getId().equals(variantId))
+                .filter(i -> i.getVariant() != null && i.getVariant().getId().equals(variantId))
                 .findFirst()
                 .orElseThrow(() -> new ApiException(404, "Variant not found in cart"));
 
@@ -70,7 +98,6 @@ public class CartService {
         }
     }
 
-    // Fetches the customer's cart - creates an empty one automatically if none exists yet
     public Cart getCart(Customer customer) {
         Cart cart = cartDAO.getByCustomerId(customer.getId());
         if (cart == null) {

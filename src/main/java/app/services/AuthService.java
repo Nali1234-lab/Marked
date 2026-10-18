@@ -1,11 +1,12 @@
 package app.services;
 
 import app.dao.CustomerDAO;
+import app.dao.ISecurityDAO;
 import app.entities.Customer;
 import app.entities.Role;
 import app.exceptions.ApiException;
 
-public class AuthService {
+public class AuthService implements ISecurityDAO {
 
     private final CustomerDAO customerDAO;
 
@@ -13,26 +14,22 @@ public class AuthService {
         this.customerDAO = new CustomerDAO();
     }
 
-    // "kunde vil kunne registrere en konto"
+    // ===== Vores metoder (bruges af controllers) =====
+
     public Customer register(String name, String email, String password) {
         Customer existing = customerDAO.getByEmail(email);
         if (existing != null) {
             throw new ApiException(400, "Email er allerede i brug: " + email);
         }
 
-        Customer customer = new Customer();
-        customer.setName(name);
-        customer.setEmail(email);
-        customer.setPassword(password);
-        customer.setRole(Role.CUSTOMER);
-
+        // Her bruger vi vores nye constructor! Hasher automatisk.
+        Customer customer = new Customer(name, email, password, Role.CUSTOMER);
         return customerDAO.create(customer);
     }
 
-    // "kunde vil kunne logge ind"
     public Customer login(String email, String password) {
         Customer customer = customerDAO.getByEmail(email);
-        if (customer == null || !customer.getPassword().equals(password)) {
+        if (customer == null || !customer.verifyPassword(password)) {
             throw new ApiException(401, "Forkert email eller password");
         }
         return customer;
@@ -48,5 +45,36 @@ public class AuthService {
 
     public Customer updateCustomer(Customer customer) {
         return customerDAO.update(customer);
+    }
+
+    // ===== ISecurityDAO-implementering (delegate-metoder) =====
+
+    @Override
+    public Customer createUser(String name, String email, String password) {
+        return register(name, email, password);
+    }
+
+    @Override
+    public Customer getVerifiedUser(String email, String password) {
+        return login(email, password);
+    }
+
+    @Override
+    public Customer addUserRole(String email, Role role) {
+        Customer customer = customerDAO.getByEmail(email);
+        if (customer == null) {
+            throw new ApiException(404, "Kunde ikke fundet: " + email);
+        }
+        customer.addRole(role);
+        return customerDAO.update(customer);
+    }
+
+    @Override
+    public Role createRole(String roleName) {
+        try {
+            return Role.valueOf(roleName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ApiException(400, "Ugyldig rolle: " + roleName + ". Gyldige: CUSTOMER, ADMIN");
+        }
     }
 }

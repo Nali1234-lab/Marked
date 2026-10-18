@@ -4,32 +4,67 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.mindrot.jbcrypt.BCrypt;
 
-@Entity // fortæller Hibernate at denne klasse skal blive til en tabel i databasen
-@Getter // Lombok laver automatisk get-metoder for alle felter
-@Setter // Lombok laver automatisk set-metoder for alle felter
-@NoArgsConstructor // Lombok laver en tom constructor, som Hibernate kræver
-@Table(name = "customers") // navngiver selve tabellen i databasen "customers"
-public class Customer {
+import java.util.Set;
 
-    @Id // markerer dette felt som tabellens primærnøgle
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // databasen genererer automatisk et unikt id
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "customers")
+public class Customer implements ISecurityUser {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    // opretter en kolonne, der ikke må være tom - navn er påkrævet
     private String name;
 
     @Column(nullable = false, unique = true)
-    // nullable = false: email er påkrævet
-    // unique = true: ingen to kunder må have samme email (bruges også til login)
     private String email;
 
     @Column(nullable = false)
-    // password er påkrævet
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    // NY: Constructor der hasher passwordet med det samme!
+    public Customer(String name, String email, String plainPassword, Role role) {
+        this.name = name;
+        this.email = email;
+        this.password = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+        this.role = role;
+    }
+
+    // ===== ISecurityUser-implementering =====
+    @Override
+    public Set<String> getRolesAsStrings() {
+        if (role == null) return Set.of();
+        return Set.of(role.name());
+    }
+
+    @Override
+    public boolean verifyPassword(String pw) {
+        try {
+            return BCrypt.checkpw(pw, this.password);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public void addRole(Role role) {
+        this.role = role;
+    }
+
+    @Override
+    public void removeRole(String role) {
+        if (this.role != null && this.role.name().equals(role)) {
+            this.role = null;
+        }
+    }
 }
