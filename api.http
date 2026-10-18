@@ -1,0 +1,8 @@
+### Preview: T-shirt med Rød + Bomuld
+POST http://localhost:7070/api/custom-products/7/preview
+Content-Type: application/json
+
+{
+  "colorId": 1,
+  "materialId": 4
+}

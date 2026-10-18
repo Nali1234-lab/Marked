@@ -26,7 +26,13 @@ public class OrderItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
+    // Ændret til nullable = true
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "variant_id", nullable = false)
+    @JoinColumn(name = "variant_id", nullable = true)
     private Variant variant;
+
+    // NY: Tillader at en ordre-linje indeholder en custom-konfiguration
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "configuration_id", nullable = true)
+    private ProductConfiguration configuration;
 }

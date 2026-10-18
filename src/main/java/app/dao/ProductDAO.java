@@ -1,6 +1,7 @@
 package app.dao;
 
 import app.config.HibernateConfig;
+import app.entities.CustomProduct;
 import app.entities.Product;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -8,9 +9,6 @@ import jakarta.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class ProductDAO implements IDAO<Product, Long> {
-    // Bemærk: Product er abstrakt, men Hibernate håndterer det fint her.
-    // Når vi henter "Product", får vi automatisk de rigtige, konkrete objekter
-    // (StandardProduct eller CustomProduct) tilbage - det kaldes polymorfi.
 
     private final EntityManagerFactory emf;
 
@@ -31,15 +29,30 @@ public class ProductDAO implements IDAO<Product, Long> {
     @Override
     public List<Product> getAll() {
         try (EntityManager em = emf.createEntityManager()) {
-            return em.createQuery("SELECT p FROM Product p", Product.class)
+            List<Product> products = em.createQuery("SELECT p FROM Product p", Product.class)
                     .getResultList();
+            // Tving Hibernate til at hente relationer, før EntityManager lukkes
+            for (Product p : products) {
+                p.getCategory().getName();
+                if (p instanceof CustomProduct cp) {
+                    cp.getDesignOptions().size();
+                }
+            }
+            return products;
         }
     }
 
     @Override
     public Product getById(Long id) {
         try (EntityManager em = emf.createEntityManager()) {
-            return em.find(Product.class, id);
+            Product p = em.find(Product.class, id);
+            if (p != null) {
+                p.getCategory().getName();
+                if (p instanceof CustomProduct cp) {
+                    cp.getDesignOptions().size();
+                }
+            }
+            return p;
         }
     }
 
@@ -65,13 +78,19 @@ public class ProductDAO implements IDAO<Product, Long> {
         }
     }
 
-    // "kunde vil kunne browse produkter efter kategori"
     public List<Product> getByCategory(Long categoryId) {
         try (EntityManager em = emf.createEntityManager()) {
-            return em.createQuery(
+            List<Product> products = em.createQuery(
                             "SELECT p FROM Product p WHERE p.category.id = :categoryId", Product.class)
                     .setParameter("categoryId", categoryId)
                     .getResultList();
+            for (Product p : products) {
+                p.getCategory().getName();
+                if (p instanceof CustomProduct cp) {
+                    cp.getDesignOptions().size();
+                }
+            }
+            return products;
         }
     }
 }

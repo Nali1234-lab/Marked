@@ -19,22 +19,23 @@ public class CustomProduct extends Product {
     private double hiddenMargin;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    // @ManyToMany: en variant (fx et bestemt stof) kan bruges i mange custom-produkter,
-    // og ét custom-produkt kan bruge mange varianter (fx både stof OG farve)
     @JoinTable(
-            name = "custom_product_materials",
-            // navn på den "usynlige" mellemtabel, Hibernate selv opretter,
-            // fordi mange-til-mange ikke kan ligge direkte i én af de to tabeller
+            name = "custom_product_materials",   // ← samme tabel-navn som før, så data bevares
             joinColumns = @JoinColumn(name = "custom_product_id"),
             inverseJoinColumns = @JoinColumn(name = "variant_id")
     )
-    private List<Variant> materials = new ArrayList<>();
+    private List<Variant> designOptions = new ArrayList<>();
 
     @Override
     public double calculatePrice() {
-        double materialCost = materials.stream()
-                .mapToDouble(Variant::getPrice)
-                .sum();
-        return materialCost + laborCost + hiddenMargin;
+        // Basispris UDEN kundens valg.
+        // De enkelte valgmuligheders pris lægges til i ProductConfiguration.
+        return laborCost + hiddenMargin;
+    }
+
+    public List<Variant> getOptionsBySlot(DesignSlot slot) {
+        return designOptions.stream()
+                .filter(v -> v.getDesignSlot() == slot)
+                .toList();
     }
 }

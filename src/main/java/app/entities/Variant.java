@@ -28,6 +28,9 @@ public class Variant {
     @Column(nullable = false)
     private boolean onSale = false;
 
+    @Enumerated(EnumType.STRING)
+    private DesignSlot designSlot;   // COLOR, MATERIAL, eller null (for StandardProduct-varianter)
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;

@@ -53,7 +53,13 @@ public class ApplicationConfig {
                 }
             });
         });
-
+        // SPECIFIK først — ApiException → korrekt HTTP-kode
+        app.exception(app.exceptions.ApiException.class, (e, ctx) -> {
+            ctx.status(e.getCode()).json(java.util.Map.of(
+                    "status", e.getCode(),
+                    "msg", e.getMessage()
+            ));
+        });
         if (generalExceptionHandling) {
             app.exception(Exception.class, (e, ctx) -> {
                 e.printStackTrace();
