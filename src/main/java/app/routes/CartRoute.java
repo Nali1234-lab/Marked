@@ -11,7 +11,8 @@ public class CartRoute {
 
     protected EndpointGroup getCartRoutes() {
         return () -> {
-            post("/items", cartController::addItem);
+            get("/", cartController::getCart);       // <-- NY: Se kurven
+            post("/items", cartController::addItem); // Tilføj til kurven
         };
     }
 }

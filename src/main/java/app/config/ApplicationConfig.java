@@ -39,7 +39,12 @@ public class ApplicationConfig {
 
     public ApplicationConfig startServer(int port) {
         app = Javalin.create(config -> {
-            config.router.contextPath = "/api"; // Base path
+            config.router.contextPath = "/api";
+
+            config.jsonMapper(new io.javalin.json.JavalinJackson().updateMapper(mapper -> {
+                mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+                mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // <-- NY LINJE
+            }));
             config.router.apiBuilder(routes.getRoutes());
         });
 

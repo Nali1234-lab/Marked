@@ -86,3 +86,73 @@ Content-Type: application/json
   "configurationId": 1,
   "quantity": 2
 }
+
+###
+//jeg bruger gammel token og kig på at den er udløbet eller ej.
+GET http://localhost:7070/api/cart
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTIzNjU5MjcsImV4cCI6MTc5MjM2OTUyN30.YXdiQ2r6eDnideBmkm-lQiPcVX91jthE3wrIW0LLrWU
+
+###
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ali@test.dk",
+  "password": "hemmelig123"
+}
+
+
+###
+// med ny token fra post
+GET http://localhost:7070/api/cart
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0MjA4NjUsImV4cCI6MTc5MjQyNDQ2NX0.Mfuo5MaxEZ338D33cywYpztNvvArKRtk0ItHzR3emPo
+
+### Opret ordre (forvent 201 Created)
+POST http://localhost:7070/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0MjA4NjUsImV4cCI6MTc5MjQyNDQ2NX0.Mfuo5MaxEZ338D33cywYpztNvvArKRtk0ItHzR3emPo
+Content-Type: application/json
+
+{
+  "deliveryStreet": "Hovedgaden 42",
+  "deliveryZipCode": "2200",
+  "deliveryCity": "København N"
+}
+
+### 1. Se alle konfigurationer (hvis du vil finde id)
+GET http://localhost:7070/api/cart
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0MjA4NjUsImV4cCI6MTc5MjQyNDQ2NX0.Mfuo5MaxEZ338D33cywYpztNvvArKRtk0ItHzR3emPo
+
+###
+POST http://localhost:7070/api/custom-products/7/configure
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0MjA4NjUsImV4cCI6MTc5MjQyNDQ2NX0.Mfuo5MaxEZ338D33cywYpztNvvArKRtk0ItHzR3emPo
+Content-Type: application/json
+
+{
+  "colorId": 1,
+  "materialId": 4,
+  "quantity": 2
+}
+
+###
+POST http://localhost:7070/api/cart/items
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0MjA4NjUsImV4cCI6MTc5MjQyNDQ2NX0.Mfuo5MaxEZ338D33cywYpztNvvArKRtk0ItHzR3emPo
+Content-Type: application/json
+
+{
+  "configurationId": 2,
+  "quantity": 2
+}
+
+###
+POST http://localhost:7070/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0MjA4NjUsImV4cCI6MTc5MjQyNDQ2NX0.Mfuo5MaxEZ338D33cywYpztNvvArKRtk0ItHzR3emPo
+Content-Type: application/json
+
+{
+  "deliveryStreet": "Hovedgaden 42",
+  "deliveryZipCode": "2200",
+  "deliveryCity": "København N"
+}
+###
+GET http://localhost:7070/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0MjA4NjUsImV4cCI6MTc5MjQyNDQ2NX0.Mfuo5MaxEZ338D33cywYpztNvvArKRtk0ItHzR3emPo

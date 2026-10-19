@@ -24,7 +24,7 @@ public class JwtUtil {
                 .withClaim("role", customer.getRole().name())
                 .withClaim("email", customer.getEmail())
                 .withIssuedAt(Instant.now())
-                .withExpiresAt(Instant.now().plus(1, ChronoUnit.HOURS))
+                .withExpiresAt(Instant.now().plus(8, ChronoUnit.HOURS))
                 .sign(ALGORITHM);
     }
 

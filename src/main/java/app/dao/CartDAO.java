@@ -2,6 +2,7 @@ package app.dao;
 
 import app.config.HibernateConfig;
 import app.entities.Cart;
+import app.entities.CartItem;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -62,14 +63,31 @@ public class CartDAO implements IDAO<Cart, Long> {
         }
     }
 
-    // Matcher: "kunde logger ind -> skal have adgang til sin kurv"
     public Cart getByCustomerId(Long customerId) {
         try (EntityManager em = emf.createEntityManager()) {
             List<Cart> result = em.createQuery(
                             "SELECT c FROM Cart c WHERE c.customer.id = :customerId", Cart.class)
                     .setParameter("customerId", customerId)
                     .getResultList();
-            return result.isEmpty() ? null : result.get(0);
+
+            if (result.isEmpty()) {
+                return null;
+            }
+
+            Cart cart = result.get(0);
+
+            // Tving Hibernate til at hente alle varer og deres data, før vi lukker forbindelsen
+            for (CartItem item : cart.getCartItems()) {
+                if (item.getVariant() != null) {
+                    item.getVariant().getProduct().getName(); // Tving produkt-navn
+                }
+                if (item.getConfiguration() != null) {
+                    item.getConfiguration().getProduct().getName(); // Tving produkt-navn
+                    item.getConfiguration().getSelectedOptions().size(); // Tving valgmuligheder
+                }
+            }
+
+            return cart;
         }
     }
 }

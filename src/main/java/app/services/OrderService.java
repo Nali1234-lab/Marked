@@ -19,14 +19,16 @@ public class OrderService {
         this.cartService = new CartService();
     }
 
-    // "customer wants to complete a purchase, so their order is created"
     public Order createOrder(Customer customer, String deliveryStreet, String deliveryZipCode, String deliveryCity) {
+        // 1. Hent kundens kurv
         Cart cart = cartService.getCart(customer);
 
+        // 2. Tjek at kurven ikke er tom
         if (cart.getCartItems().isEmpty()) {
-            throw new ApiException(400, "Cannot create an order from an empty cart");
+            throw new ApiException(400, "Kan ikke oprette en ordre fra en tom kurv");
         }
 
+        // 3. Opret selve ordren
         Order order = new Order();
         order.setCustomer(customer);
         order.setOrderDate(LocalDateTime.now());
@@ -35,72 +37,71 @@ public class OrderService {
         order.setDeliveryZipCode(deliveryZipCode);
         order.setDeliveryCity(deliveryCity);
 
+        // 4. Flyt hver vare fra kurven over i ordren
         for (CartItem cartItem : cart.getCartItems()) {
-            Variant variant = cartItem.getVariant();
-
-            if (variant.getStock() < cartItem.getQuantity()) {
-                throw new ApiException(400, "Not enough stock for: " + variant.getName());
-            }
-
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
-            orderItem.setVariant(variant);
             orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setUnitPriceAtPurchase(variant.getPrice());
-            order.getOrderItems().add(orderItem);
 
-            // Reduce stock now - reserved for this order, not just sitting in a cart.
-            variant.setStock(variant.getStock() - cartItem.getQuantity());
-            variantDAO.update(variant);
+            // Hvis det er en almindelig variant
+            if (cartItem.getVariant() != null) {
+                Variant variant = cartItem.getVariant();
+
+                // Tjek lager
+                if (variant.getStock() < cartItem.getQuantity()) {
+                    throw new ApiException(400, "Ikke nok på lager for: " + variant.getName());
+                }
+
+                orderItem.setVariant(variant);
+                orderItem.setUnitPriceAtPurchase(variant.getPrice());
+
+                // Træk fra lager
+                variant.setStock(variant.getStock() - cartItem.getQuantity());
+                variantDAO.update(variant);
+            }
+            // Hvis det er en custom-konfiguration
+            else if (cartItem.getConfiguration() != null) {
+                ProductConfiguration config = cartItem.getConfiguration();
+
+                // Tjek lager for BÅDE farve og materiale
+                for (Variant option : config.getSelectedOptions()) {
+                    if (option.getStock() < cartItem.getQuantity()) {
+                        throw new ApiException(400, "Ikke nok på lager for: " + option.getName());
+                    }
+                }
+
+                orderItem.setConfiguration(config);
+                orderItem.setUnitPriceAtPurchase(config.getFinalPrice());
+
+                // Træk fra lager for valgmulighederne
+                for (Variant option : config.getSelectedOptions()) {
+                    option.setStock(option.getStock() - cartItem.getQuantity());
+                    variantDAO.update(option);
+                }
+            }
+
+            order.getOrderItems().add(orderItem);
         }
 
+        // 5. Gem ordren i databasen
         Order savedOrder = orderDAO.create(order);
+
+        // 6. Tøm kurven, da varerne nu er i en ordre
         cartService.clearCart(customer);
 
         return savedOrder;
-    }
-
-    // "customer wants to complete payment, so their order becomes 'paid'"
-    public boolean processPayment(Order order) {
-        if (!validatePayment(order)) {
-            throw new ApiException(402, "Payment could not be validated");
-        }
-
-        order.setStatus(OrderStatus.PAID);
-        orderDAO.update(order);
-        return true;
-    }
-
-    // Stub for now - in a real system this would talk to a payment provider.
-    public boolean validatePayment(Order order) {
-        return order != null && order.getStatus() == OrderStatus.PENDING;
     }
 
     // "customer wants to see the status of their order"
     public OrderStatus getOrderStatus(Long orderId) {
         Order order = orderDAO.getById(orderId);
         if (order == null) {
-            throw new ApiException(404, "Order not found with id: " + orderId);
+            throw new ApiException(404, "Ordre ikke fundet med id: " + orderId);
         }
         return order.getStatus();
     }
 
     public java.util.List<Order> getCustomerOrders(Long customerId) {
         return orderDAO.getByCustomerId(customerId);
-    }
-
-    // "admin wants to see all paid orders, to know what needs packing"
-    public java.util.List<Order> getAllPaidOrders() {
-        return orderDAO.getAllPaid();
-    }
-
-    // "admin wants to update an order's status (e.g. to DONE after shipping)"
-    public void updateStatus(Long orderId, OrderStatus newStatus) {
-        Order order = orderDAO.getById(orderId);
-        if (order == null) {
-            throw new ApiException(404, "Order not found with id: " + orderId);
-        }
-        order.setStatus(newStatus);
-        orderDAO.update(order);
     }
 }

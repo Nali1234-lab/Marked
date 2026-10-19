@@ -4,6 +4,7 @@ import app.dao.CartDAO;
 import app.dao.CartItemDAO;
 import app.dao.ProductConfigurationDAO;
 import app.dao.VariantDAO;
+import app.dto.CartDTO;
 import app.entities.Cart;
 import app.entities.CartItem;
 import app.entities.Customer;
@@ -23,6 +24,12 @@ public class CartService {
         this.cartItemDAO = new CartItemDAO();
         this.variantDAO = new VariantDAO();
         this.configDAO = new ProductConfigurationDAO();
+    }
+
+    // NY: Hent kurven som en DTO
+    public CartDTO getCartContents(Customer customer) {
+        Cart cart = getCart(customer); // Genbruger din eksisterende metode
+        return CartDTO.from(cart);
     }
 
     // "customer wants to add a variant to their cart"
@@ -54,7 +61,7 @@ public class CartService {
         }
     }
 
-    // NY: Tilføj en gemt konfiguration til kurven
+    // Tilføj en gemt konfiguration til kurven
     public void addConfigurationToCart(Customer customer, Long configurationId, int qty) {
         ProductConfiguration config = configDAO.getById(configurationId);
         if (config == null) {
@@ -104,6 +111,7 @@ public class CartService {
             Cart newCart = new Cart();
             newCart.setCustomer(customer);
             cart = cartDAO.create(newCart);
+            // Efter create, er cartItems en tom liste, så DTO'en vil bare vise 0 varer
         }
         return cart;
     }

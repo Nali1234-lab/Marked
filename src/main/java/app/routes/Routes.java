@@ -9,6 +9,7 @@ public class Routes {
     private final CustomerRoute customerRoute = new CustomerRoute();
     private final CatalogRoute catalogRoute = new CatalogRoute();
     private final CartRoute cartRoute = new CartRoute();
+    private final OrderRoute orderRoute = new OrderRoute(); // <-- NY
 
     public EndpointGroup getRoutes() {
         return () -> {
@@ -21,6 +22,7 @@ public class Routes {
             path("/products", catalogRoute.getProductRoutes());
             path("/custom-products", catalogRoute.getCustomProductRoutes());
             path("/cart", cartRoute.getCartRoutes());
+            path("/orders", orderRoute.getOrderRoutes()); // <-- NY
         };
     }
 }
