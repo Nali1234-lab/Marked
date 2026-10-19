@@ -39,12 +39,14 @@ public class ApplicationConfig {
 
     public ApplicationConfig startServer(int port) {
         app = Javalin.create(config -> {
-            config.router.contextPath = "/api";
+            config.router.contextPath = "/api"; // Base path
 
+            // Jackson opsætning til LocalDateTime
             config.jsonMapper(new io.javalin.json.JavalinJackson().updateMapper(mapper -> {
                 mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
-                mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // <-- NY LINJE
+                mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             }));
+
             config.router.apiBuilder(routes.getRoutes());
         });
 
@@ -108,6 +110,11 @@ public class ApplicationConfig {
 
             Long customerId = JwtUtil.getCustomerId(token);
             String role = JwtUtil.getRole(token);
+
+            // NY: Kræv ADMIN-rolle for /admin-stier
+            if (path.startsWith("/admin") && !role.equals("ADMIN")) {
+                throw new ApiException(403, "Kun administratorer har adgang til dette endpoint");
+            }
 
             ctx.attribute("customerId", customerId);
             ctx.attribute("role", role);

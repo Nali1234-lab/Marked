@@ -156,3 +156,111 @@ Content-Type: application/json
 ###
 GET http://localhost:7070/api/orders
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0MjA4NjUsImV4cCI6MTc5MjQyNDQ2NX0.Mfuo5MaxEZ338D33cywYpztNvvArKRtk0ItHzR3emPo
+
+###
+//jeg laver en admin som kan teste kraverne er opfyldt
+POST http://localhost:7070/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Nali CP",
+  "email": "nali@test.dk",
+  "password": "hemmelig123"
+}
+
+###
+// til at få ny token rolle admin og test den virker
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "nali@test.dk",
+  "password": "hemmelig123"
+}
+
+###
+GET http://localhost:7070/api/admin/test
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDI1MDk5LCJleHAiOjE3OTI0NTM4OTl9.OA8uM58uBA4Uqm2mY9QjjGrJoB8MABVQD7zK4q1Zdvs
+
+###
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "nali@test.dk",
+  "password": "hemmelig123"
+}
+### Opret kategori (kræver ADMIN token)
+POST http://localhost:7070/api/admin/categories
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDMwMjc4LCJleHAiOjE3OTI0NTkwNzh9.Lo-p6Pos4fhwyHDaMFADNCrsIjv19n5iLA_4Heni1oE
+Content-Type: application/json
+
+{
+  "name": "Nye Produkter"
+}
+
+###
+POST http://localhost:7070/api/admin/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDMwODY1LCJleHAiOjE3OTI0NTk2NjV9.FY8Qo8PL1bazjfHzMgBBa9BYgBNhDzZW5IgyYXjUjMI
+Content-Type: application/json
+
+{
+  "name": "Ny Custom T-shirt",
+  "type": "CUSTOM",
+  "laborCost": 50.0,
+  "hiddenMargin": 20.0,
+  "categoryId": 2
+}
+
+###
+POST http://localhost:7070/api/admin/variants
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDMxNzY5LCJleHAiOjE3OTI0NjA1Njl9.hQ0L2XRQISimj2PxxdXMStGsCfMJ7sUigMr0dck12zg
+Content-Type: application/json
+
+{
+  "name": "Lilla",
+  "price": 15.0,
+  "stock": 50,
+  "designSlot": "COLOR",
+  "productId": 9
+}
+
+###
+PUT http://localhost:7070/api/admin/variants/12/price
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDMyNDI1LCJleHAiOjE3OTI0NjEyMjV9.qprC25a5uwBEm-3jkICJEfye84ptZCKUHIbd4sCDBL0
+Content-Type: application/json
+
+{
+  "price": 25.0
+}
+
+###
+PUT http://localhost:7070/api/admin/variants/12/stock
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDMyNDI1LCJleHAiOjE3OTI0NjEyMjV9.qprC25a5uwBEm-3jkICJEfye84ptZCKUHIbd4sCDBL0
+Content-Type: application/json
+
+{
+  "stock": 100
+}
+
+###
+PUT http://localhost:7070/api/admin/variants/12/sale
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDMyNDI1LCJleHAiOjE3OTI0NjEyMjV9.qprC25a5uwBEm-3jkICJEfye84ptZCKUHIbd4sCDBL0
+Content-Type: application/json
+
+{
+  "onSale": true
+}
+
+###
+GET http://localhost:7070/api/admin/orders/paid
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDMyODU3LCJleHAiOjE3OTI0NjE2NTd9.pKUFMqXOfG5_2WR42CIz9jIqYIVMIrzfAcR6Yq5tH24
+
+###
+PUT http://localhost:7070/api/admin/orders/4/status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDMyODU3LCJleHAiOjE3OTI0NjE2NTd9.pKUFMqXOfG5_2WR42CIz9jIqYIVMIrzfAcR6Yq5tH24
+Content-Type: application/json
+
+{
+  "status": "PAID"
+}
