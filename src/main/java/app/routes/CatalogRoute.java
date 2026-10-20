@@ -1,13 +1,13 @@
 package app.routes;
 
-import app.api.CatalogAPI;
+import app.controllers.CatalogController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class CatalogRoute {
 
-    private final CatalogAPI catalogController = new CatalogAPI();
+    private final CatalogController catalogController = new CatalogController();
 
     protected EndpointGroup getProductRoutes() {
         return () -> {

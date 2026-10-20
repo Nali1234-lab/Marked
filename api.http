@@ -307,3 +307,74 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtY
 // selv ordre
 GET http://localhost:7070/api/orders
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0NTA2NDcsImV4cCI6MTc5MjQ3OTQ0N30.jJIFNhwuhJXEZZSK8R_HMjPunOyjMpvYKXyt2mM5i_Q
+
+###
+// opret kunde
+POST http://localhost:7070/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Nali CP",
+  "email": "nali@test.dk",
+  "password": "hemmelig123"
+}
+
+###
+//for at få token
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "nali@test.dk",
+  "password": "hemmelig123"
+}
+
+###
+// se kunde profil med token
+GET http://localhost:7070/api/customers/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMSIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDk4NzQ0LCJleHAiOjE3OTI1Mjc1NDR9.0bjw4rfbSLxSqkyxWBfkCIMlYUcQ_ve35xNbN1zfKjw
+
+###
+// lav category
+POST http://localhost:7070/api/admin/categories
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMSIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDk5MTYzLCJleHAiOjE3OTI1Mjc5NjN9.URXb9Vqw7Y7-NInGXGQVdHyII8tLEUltqnJ3TMARfpI
+Content-Type: application/json
+
+{
+  "name": "Test Kategori"
+}
+
+###
+
+GET http://localhost:7070/api/products/7
+
+
+###
+// opret ny kunde til bestiling
+POST http://localhost:7070/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "MOOO",
+  "email": "Mooo@test.dk",
+  "password": "hemmelig123"
+}
+
+###
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "Mooo@test.dk",
+  "password": "hemmelig123"
+}
+
+###
+GET http://localhost:7070/api/customers/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMiIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiTW9vb0B0ZXN0LmRrIiwiaWF0IjoxNzkyNDk5NzgxLCJleHAiOjE3OTI1Mjg1ODF9.b5P0aNQ1Om-CMkOcZhic_ft1nU_3oQBtbPZG2x5CVTo
+
+###
+GET http://localhost:7070/api/customers/me
+
+###
+http://localhost:7070/api/health

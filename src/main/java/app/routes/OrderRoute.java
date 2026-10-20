@@ -1,13 +1,13 @@
 package app.routes;
 
-import app.api.OrderAPI;
+import app.controllers.OrderController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class OrderRoute {
 
-    private final OrderAPI orderController = new OrderAPI();
+    private final OrderController orderController = new OrderController();
 
     protected EndpointGroup getOrderRoutes() {
         return () -> {

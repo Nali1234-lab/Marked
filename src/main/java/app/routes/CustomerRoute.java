@@ -1,13 +1,13 @@
 package app.routes;
 
-import app.api.CustomerAPI;
+import app.controllers.CustomerController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class CustomerRoute {
 
-    private final CustomerAPI customerController = new CustomerAPI();
+    private final CustomerController customerController = new CustomerController();
 
     protected EndpointGroup getAuthRoutes() {
         return () -> {

@@ -1,13 +1,13 @@
 package app.routes;
 
-import app.api.AdminAPI;
+import app.controllers.AdminController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class AdminRoute {
 
-    private final AdminAPI adminController = new AdminAPI();
+    private final AdminController adminController = new AdminController();
 
     protected EndpointGroup getAdminRoutes() {
         return () -> {

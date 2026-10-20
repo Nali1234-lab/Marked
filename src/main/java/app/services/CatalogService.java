@@ -1,9 +1,9 @@
 package app.services;
 
-import app.dao.CategoryDAO;
-import app.dao.ProductDAO;
-import app.dao.VariantDAO;
-import app.dto.CreateProductRequest;
+import app.daos.CategoryDAO;
+import app.daos.ProductDAO;
+import app.daos.VariantDAO;
+import app.dtos.CreateProductRequest;
 import app.entities.*;
 import app.exceptions.ApiException;
 

@@ -1,8 +1,7 @@
 package app.services;
 
-import app.dao.OrderDAO;
-import app.dao.VariantDAO;
-import app.dto.OrderDTO;
+import app.daos.OrderDAO;
+import app.daos.VariantDAO;
 import app.entities.*;
 import app.exceptions.ApiException;
 

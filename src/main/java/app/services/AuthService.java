@@ -1,7 +1,7 @@
 package app.services;
 
-import app.dao.CustomerDAO;
-import app.dao.ISecurityDAO;
+import app.daos.CustomerDAO;
+import app.daos.ISecurityDAO;
 import app.entities.Customer;
 import app.entities.Role;
 import app.exceptions.ApiException;

@@ -1,10 +1,10 @@
 package app.services;
 
-import app.dao.CartDAO;
-import app.dao.CartItemDAO;
-import app.dao.ProductConfigurationDAO;
-import app.dao.VariantDAO;
-import app.dto.CartDTO;
+import app.daos.CartDAO;
+import app.daos.CartItemDAO;
+import app.daos.ProductConfigurationDAO;
+import app.daos.VariantDAO;
+import app.dtos.CartDTO;
 import app.entities.Cart;
 import app.entities.CartItem;
 import app.entities.Customer;

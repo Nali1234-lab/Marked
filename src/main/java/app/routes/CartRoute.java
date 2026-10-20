@@ -1,13 +1,13 @@
 package app.routes;
 
-import app.api.CartAPI;
+import app.controllers.CartController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class CartRoute {
 
-    private final CartAPI cartController = new CartAPI();
+    private final CartController cartController = new CartController();
 
     protected EndpointGroup getCartRoutes() {
         return () -> {
