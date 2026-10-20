@@ -1,5 +1,7 @@
 package app.entities;
 
 public enum OrderStatus {
-    PENDING , PAID , DONE
+    PENDING // Kunden har bestilt, afventer manuel betalingsbekræftelse
+    , PAID  // admin efter betaling skifte til paid
+    , DONE  // ordern er sendt manuelt
 }
