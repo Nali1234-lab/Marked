@@ -18,53 +18,46 @@ public class OrderAPI {
     private final CustomerDAO customerDAO = new CustomerDAO();
 
     public void createOrder(Context ctx) {
-        // 1. Hent kunden (lagkes ind af middleware)
         Long customerId = ctx.attribute("customerId");
-        if (customerId == null) {
-            throw new ApiException(401, "Du skal være logget ind for at gennemføre et køb");
-        }
+        if (customerId == null) throw new ApiException(401, "Du skal være logget ind for at gennemføre et køb");
 
         Customer customer = customerDAO.getById(customerId);
-        if (customer == null) {
-            throw new ApiException(404, "Kunde ikke fundet");
-        }
+        if (customer == null) throw new ApiException(404, "Kunde ikke fundet");
 
-        // 2. Læs leveringsadressen fra body
         CreateOrderRequest req = ctx.bodyAsClass(CreateOrderRequest.class);
+        if (req.deliveryStreet() == null || req.deliveryStreet().isBlank()) throw new ApiException(400, "Field 'deliveryStreet' er påkrævet");
+        if (req.deliveryZipCode() == null || req.deliveryZipCode().isBlank()) throw new ApiException(400, "Field 'deliveryZipCode' er påkrævet");
+        if (req.deliveryCity() == null || req.deliveryCity().isBlank()) throw new ApiException(400, "Field 'deliveryCity' er påkrævet");
 
-        if (req.deliveryStreet() == null || req.deliveryStreet().isBlank())
-            throw new ApiException(400, "Field 'deliveryStreet' er påkrævet");
-        if (req.deliveryZipCode() == null || req.deliveryZipCode().isBlank())
-            throw new ApiException(400, "Field 'deliveryZipCode' er påkrævet");
-        if (req.deliveryCity() == null || req.deliveryCity().isBlank())
-            throw new ApiException(400, "Field 'deliveryCity' er påkrævet");
-
-        // 3. Kald servicen
-        Order order = orderService.createOrder(
-                customer,
-                req.deliveryStreet(),
-                req.deliveryZipCode(),
-                req.deliveryCity()
-        );
-
-        // 4. Send svaret tilbage (201 Created)
+        Order order = orderService.createOrder(customer, req.deliveryStreet(), req.deliveryZipCode(), req.deliveryCity());
         ctx.status(201).json(OrderDTO.from(order));
     }
 
     public void getOrders(Context ctx) {
         Long customerId = ctx.attribute("customerId");
-        if (customerId == null) {
-            throw new ApiException(401, "Du skal være logget ind for at se dine ordrer");
-        }
+        if (customerId == null) throw new ApiException(401, "Du skal være logget ind for at se dine ordrer");
 
         List<Order> orders = orderService.getCustomerOrders(customerId);
-
-        // Konverter listen af Order-entities til DTOs
         List<OrderDTO> dtos = new ArrayList<>();
         for (Order order : orders) {
             dtos.add(OrderDTO.from(order));
         }
-
         ctx.json(dtos);
+    }
+
+    // NY: Se én specifik ordre
+    public void getOrderById(Context ctx) {
+        Long customerId = ctx.attribute("customerId");
+        if (customerId == null) throw new ApiException(401, "Du skal være logget ind");
+
+        long orderId = ctx.pathParamAsClass("id", Long.class).get();
+        Order order = orderService.getOrderById(orderId);
+
+        // Sikkerhed: Kun ejeren af ordren må se den
+        if (!order.getCustomer().getId().equals(customerId)) {
+            throw new ApiException(403, "Du har ikke adgang til denne ordre");
+        }
+
+        ctx.json(OrderDTO.from(order));
     }
 }

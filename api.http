@@ -264,3 +264,46 @@ Content-Type: application/json
 {
   "status": "PAID"
 }
+
+###
+GET http://localhost:7070/api/products?categoryId=1
+
+###
+GET http://localhost:7070/api/products/on-sale
+
+###
+//login som customer og teste at any kurv i order
+POST http://localhost:7070/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ali@test.dk",
+  "password": "hemmelig123"
+}
+
+
+###
+POST http://localhost:7070/api/cart/items/variant
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0NTAwODQsImV4cCI6MTc5MjQ3ODg4NH0.Pcab3hvISiqbEVh3T1cmc-5UQd0vEyGrjs5I5Wu-kE8
+Content-Type: application/json
+
+{
+  "variantId": 1,
+  "quantity": 1
+}
+
+
+###
+// jeg vil tjekke at ADMIN KAN se ordre med eget token
+GET http://localhost:7070/api/orders/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiNCIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoibmFsaUB0ZXN0LmRrIiwiaWF0IjoxNzkyNDUwMzkwLCJleHAiOjE3OTI0NzkxOTB9.63_akz0xmLTL1vskHRwbodtMaAtt7fSlrpFnZzhoOaU
+
+###
+//nu tjek med selv customertoken for at se order.
+GET http://localhost:7070/api/customers/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0NTA2NDcsImV4cCI6MTc5MjQ3OTQ0N30.jJIFNhwuhJXEZZSK8R_HMjPunOyjMpvYKXyt2mM5i_Q
+
+###
+// selv ordre
+GET http://localhost:7070/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMyIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiYWxpQHRlc3QuZGsiLCJpYXQiOjE3OTI0NTA2NDcsImV4cCI6MTc5MjQ3OTQ0N30.jJIFNhwuhJXEZZSK8R_HMjPunOyjMpvYKXyt2mM5i_Q

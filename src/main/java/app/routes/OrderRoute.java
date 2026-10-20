@@ -11,8 +11,9 @@ public class OrderRoute {
 
     protected EndpointGroup getOrderRoutes() {
         return () -> {
-            post("/", orderController::createOrder); // Gennemfør køb
-            get("/", orderController::getOrders);    // Se mine ordrer
+            post("/", orderController::createOrder);
+            get("/", orderController::getOrders);
+            get("/{id}", orderController::getOrderById); // <-- NY
         };
     }
 }

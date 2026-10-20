@@ -96,4 +96,12 @@ public class OrderService {
         order.setStatus(newStatus);
         orderDAO.update(order);
     }
+
+    public Order getOrderById(Long orderId) {
+        Order order = orderDAO.getById(orderId);
+        if (order == null) {
+            throw new ApiException(404, "Ordre ikke fundet med id: " + orderId);
+        }
+        return order;
+    }
 }

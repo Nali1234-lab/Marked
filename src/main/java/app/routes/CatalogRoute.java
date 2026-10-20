@@ -12,6 +12,7 @@ public class CatalogRoute {
     protected EndpointGroup getProductRoutes() {
         return () -> {
             get("/", catalogController::getAll);
+            get("/on-sale", catalogController::getVariantsOnSale); // <-- SKAL stå før {id}
             get("/{id}", catalogController::getById);
         };
     }

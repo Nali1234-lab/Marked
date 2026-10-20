@@ -2,6 +2,7 @@ package app.api;
 
 import app.dao.ProductConfigurationDAO;
 import app.dao.ProductDAO;
+import app.dao.VariantDAO;
 import app.dto.*;
 import app.entities.*;
 import app.exceptions.ApiException;
@@ -13,13 +14,29 @@ import java.util.List;
 public class CatalogAPI {
 
     private final ProductDAO productDAO = new ProductDAO();
+    private final VariantDAO variantDAO = new VariantDAO();
     private final ProductConfigurationDAO configDAO = new ProductConfigurationDAO();
 
+    // Opdateret: Kan filtrere efter kategoriId
     public void getAll(Context ctx) {
-        List<Product> products = productDAO.getAll();
-        List<ProductDTO> dtos = products.stream()
-                .map(ProductDTO::from)
-                .toList();
+        String categoryIdParam = ctx.queryParam("categoryId");
+        List<Product> products;
+
+        if (categoryIdParam != null && !categoryIdParam.isBlank()) {
+            try {
+                Long categoryId = Long.parseLong(categoryIdParam);
+                products = productDAO.getByCategory(categoryId);
+            } catch (NumberFormatException e) {
+                throw new ApiException(400, "Ugyldigt categoryId format");
+            }
+        } else {
+            products = productDAO.getAll();
+        }
+
+        List<ProductDTO> dtos = new ArrayList<>();
+        for (Product p : products) {
+            dtos.add(ProductDTO.from(p));
+        }
         ctx.json(dtos);
     }
 
@@ -30,6 +47,16 @@ public class CatalogAPI {
             throw new ApiException(404, "Produkt ikke fundet med id: " + id);
         }
         ctx.json(ProductDetailsDTO.from(product));
+    }
+
+    // NY: Se alle varer på tilbud
+    public void getVariantsOnSale(Context ctx) {
+        List<Variant> variants = variantDAO.getOnSale();
+        List<VariantDTO> dtos = new ArrayList<>();
+        for (Variant v : variants) {
+            dtos.add(VariantDTO.from(v));
+        }
+        ctx.json(dtos);
     }
 
     public void preview(Context ctx) {

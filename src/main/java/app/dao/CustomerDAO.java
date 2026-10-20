@@ -11,8 +11,14 @@ public class CustomerDAO implements IDAO<Customer, Long> {
 
     private final EntityManagerFactory emf;
 
+    // Bruges i produktion
     public CustomerDAO() {
         this.emf = HibernateConfig.getEntityManagerFactory();
+    }
+
+    // NY: Bruges til tests (så vi kan sende Testcontainers-databasen ind)
+    public CustomerDAO(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 
     @Override
@@ -61,7 +67,7 @@ public class CustomerDAO implements IDAO<Customer, Long> {
             em.getTransaction().commit();
         }
     }
-    // Matcher: "kunde vil kunne logge ind" (login sker via email, ikke id)
+
     public Customer getByEmail(String email) {
         try (EntityManager em = emf.createEntityManager()) {
             List<Customer> result = em.createQuery(
