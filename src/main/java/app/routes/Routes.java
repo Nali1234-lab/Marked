@@ -15,7 +15,7 @@ public class Routes {
     public EndpointGroup getRoutes() {
         return () -> {
             // Sundhedstjek (offentlig)
-            get("/auth/healthcheck", ctx -> ctx.json(java.util.Map.of("status", "ok")));
+            get("/auth/healthcheck", ctx -> ctx.json(java.util.Map.of("status", "superrrr ok")));
 
             // Ruterne
             path("/auth", customerRoute.getAuthRoutes());
