@@ -93,7 +93,7 @@ public class ApplicationConfig {
 
             // Offentlige endpoints
             boolean isPublic =
-                    path.equals("/health") ||
+                    path.equals("/auth/healthcheck") ||
                             path.equals("/auth/register") ||
                             path.equals("/auth/login") ||
                             (path.startsWith("/products") && method.equals("GET")) ||
