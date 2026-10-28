@@ -59,7 +59,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:7070/api/health
+GET http://localhost:7070/api/auth/healthcheck
 ###
 GET http://localhost:7070/api/products
 
@@ -377,4 +377,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtY
 GET http://localhost:7070/api/customers/me
 
 ###
-http://localhost:7070/api/health
+http://localhost:7070/api/auth/healthchek
