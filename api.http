@@ -378,3 +378,117 @@ GET http://localhost:7070/api/customers/me
 
 ###
 http://localhost:7070/api/auth/healthchek
+
+
+###
+// test after deployment
+https://marked.rozh.dk/api/auth/healthcheck
+
+
+###
+
+// opret ny kunde til bestiling
+POST http://marked.rozh.dk/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "DEP.TEST",
+  "email": "DEP@test.dk",
+  "password": "DEP123"
+}
+
+###
+// login for at få token til at se customer side
+POST https://marked.rozh.dk/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "DEP@test.dk",
+  "password": "DEP123"
+}
+
+
+###
+// tjek customersiden efter login
+GET https://marked.rozh.dk/api/customers/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMSIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoiREVQQHRlc3QuZGsiLCJpYXQiOjE3OTMzMDcxMzAsImV4cCI6MTc5MzMzNTkzMH0.-Tm12eQCk1UggdNrAVJRFW93EKljZoK5QHCp2Lxsw0M
+
+
+###
+// nu har jeg ændret rolle til Admin gennem pgAdmin i skydb.
+GET https://marked.rozh.dk/api/admin/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMSIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoiREVQQHRlc3QuZGsiLCJpYXQiOjE3OTMzMDk0MjksImV4cCI6MTc5MzMzODIyOX0.jfAfvNz-QEiltOJF2N58wipV3ZNAHOv0m8dUibedcBs
+
+###
+// lav en kunde og bestiling. 1.
+POST https://marked.rozh.dk/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Live Kunde",
+  "email": "kunde@rozh.dk",
+  "password": "kunde123"
+}
+###
+//2.
+POST https://marked.rozh.dk/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "kunde@rozh.dk",
+  "password": "kunde123"
+}
+###
+//3.
+POST https://marked.rozh.dk/api/custom-products/7/configure
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMiIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoia3VuZGVAcm96aC5kayIsImlhdCI6MTc5MzMxMDUyMiwiZXhwIjoxNzkzMzM5MzIyfQ.kQl8anQJApYTJzUjxCDfHIPwrbg39pFORelT1k9CttE
+Content-Type: application/json
+
+{
+  "colorId": 1,
+  "materialId": 4,
+  "quantity": 1
+}
+###
+POST https://marked.rozh.dk/api/cart/items
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMiIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoia3VuZGVAcm96aC5kayIsImlhdCI6MTc5MzMxMDUyMiwiZXhwIjoxNzkzMzM5MzIyfQ.kQl8anQJApYTJzUjxCDfHIPwrbg39pFORelT1k9CttE
+Content-Type: application/json
+
+{
+  "configurationId": 1,
+  "quantity": 1
+}
+###
+POST https://marked.rozh.dk/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMiIsInJvbGUiOiJDVVNUT01FUiIsImVtYWlsIjoia3VuZGVAcm96aC5kayIsImlhdCI6MTc5MzMxMDUyMiwiZXhwIjoxNzkzMzM5MzIyfQ.kQl8anQJApYTJzUjxCDfHIPwrbg39pFORelT1k9CttE
+Content-Type: application/json
+
+{
+  "deliveryStreet": "Testvej 1",
+  "deliveryZipCode": "2200",
+  "deliveryCity": "København N"
+}
+
+
+
+###
+//admin skal kunne ændre og se ordres og prise osv.
+POST https://marked.rozh.dk/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "DEP@test.dk",
+  "password": "DEP123"
+}
+###
+PUT https://marked.rozh.dk/api/admin/orders/1/status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMSIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoiREVQQHRlc3QuZGsiLCJpYXQiOjE3OTMzMTA5ODAsImV4cCI6MTc5MzMzOTc4MH0.iRgbUoGx8w7MGD7AxYdHOfFXEiMA_KjGdvSk-mlBAnk
+Content-Type: application/json
+
+{
+  "status": "PAID"
+}
+###
+GET https://marked.rozh.dk/api/admin/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtYXJrZWQtYXBpIiwic3ViIjoiMSIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoiREVQQHRlc3QuZGsiLCJpYXQiOjE3OTMzMTA5ODAsImV4cCI6MTc5MzMzOTc4MH0.iRgbUoGx8w7MGD7AxYdHOfFXEiMA_KjGdvSk-mlBAnk
+
