@@ -66,6 +66,7 @@ Custom `ApiException` is mapped in `ApplicationConfig` to return consistent JSON
 # Data Model
 
 ## ERD
+<img width="477" height="471" alt="ERD MARKED" src="https://github.com/user-attachments/assets/dd345bfc-3b48-4c27-bf23-76208089d9c2" />
 
 
 
