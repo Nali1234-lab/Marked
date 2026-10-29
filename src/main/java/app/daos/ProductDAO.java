@@ -12,6 +12,11 @@ public class ProductDAO implements IDAO<Product, Long> {
 
     private final EntityManagerFactory emf;
 
+    // Bruges til tests
+    public ProductDAO(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
     public ProductDAO() {
         this.emf = HibernateConfig.getEntityManagerFactory();
     }

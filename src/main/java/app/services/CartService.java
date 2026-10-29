@@ -26,13 +26,13 @@ public class CartService {
         this.configDAO = new ProductConfigurationDAO();
     }
 
-    // NY: Hent kurven som en DTO
+    // Hent kurven som en DTO
     public CartDTO getCartContents(Customer customer) {
         Cart cart = getCart(customer); // Genbruger din eksisterende metode
         return CartDTO.from(cart);
     }
 
-    // "customer wants to add a variant to their cart"
+    // customer wants to add a variant to their cart
     public void addItemToCart(Customer customer, Long variantId, int qty) {
         Variant variant = variantDAO.getById(variantId);
         if (variant == null) {
@@ -111,7 +111,6 @@ public class CartService {
             Cart newCart = new Cart();
             newCart.setCustomer(customer);
             cart = cartDAO.create(newCart);
-            // Efter create, er cartItems en tom liste, så DTO'en vil bare vise 0 varer
         }
         return cart;
     }

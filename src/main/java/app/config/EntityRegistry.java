@@ -18,8 +18,6 @@ final class EntityRegistry {
         configuration.addAnnotatedClass(Cart.class);
         configuration.addAnnotatedClass(CartItem.class);
         configuration.addAnnotatedClass(Variant.class);
-
-        // NY: Registrerer den nye entity, så Hibernate opretter tabellen
         configuration.addAnnotatedClass(ProductConfiguration.class);
     }
 }

@@ -17,7 +17,7 @@ public class Variant {
     private Long id;
 
     @Column(nullable = false)
-    private String name; // fx "Størrelse M, Rød"
+    private String name;
 
     @Column(nullable = false)
     private double price;
@@ -29,7 +29,7 @@ public class Variant {
     private boolean onSale = false;
 
     @Enumerated(EnumType.STRING)
-    private DesignSlot designSlot;   // COLOR, MATERIAL, eller null (for StandardProduct-varianter)
+    private DesignSlot designSlot;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)

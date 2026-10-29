@@ -27,15 +27,11 @@ public class Order {
     private String deliveryZipCode;
     private String deliveryCity;
     @ManyToOne(fetch = FetchType.LAZY)
-    // @ManyToOne: mange Order-objekter kan pege på én Customer (relationstypen vi besluttede)
-    // fetch = LAZY: hent kun kundedata, når det faktisk efterspørges i koden
-    @JoinColumn(name = "customer_id", nullable = false)
-    // opretter en kolonne "customer_id" i orders-tabellen (fremmednøglen)
-    // nullable = false: hver ordre SKAL have en kunde, kan ikke være tom
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    // hvis kunden denne ordre peger på bliver slettet, slet automatisk også denne ordre
-    private Customer customer; // selve referencen til kundens objekt
 
+    @JoinColumn(name = "customer_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+
+    private Customer customer;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 

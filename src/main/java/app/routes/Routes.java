@@ -25,7 +25,7 @@ public class Routes {
             path("/cart", cartRoute.getCartRoutes());
             path("/orders", orderRoute.getOrderRoutes());
 
-            // NY: Admin ruter
+            // Admin ruter
             path("/admin", adminRoute.getAdminRoutes());
         };
     }

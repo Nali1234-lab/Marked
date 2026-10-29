@@ -11,6 +11,11 @@ public class VariantDAO implements IDAO<Variant, Long> {
 
     private final EntityManagerFactory emf;
 
+    // Bruges til tests
+    public VariantDAO(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
     public VariantDAO() {
         this.emf = HibernateConfig.getEntityManagerFactory();
     }
@@ -62,7 +67,7 @@ public class VariantDAO implements IDAO<Variant, Long> {
         }
     }
 
-    // Matcher user story: "kunde vil kunne se varer på tilbud"
+    // kunde vil kunne se varer på tilbud
     public List<Variant> getOnSale() {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery(
@@ -70,7 +75,7 @@ public class VariantDAO implements IDAO<Variant, Long> {
                     .getResultList();
         }
     }
-    // Matcher: "kunde vil kunne vælge en variant af det valgte produkt"
+    // kunde vil kunne vælge en variant af det valgte produkt
     public List<Variant> getByProductId(Long productId) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery(

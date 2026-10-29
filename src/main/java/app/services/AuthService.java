@@ -14,7 +14,7 @@ public class AuthService implements ISecurityDAO {
         this.customerDAO = new CustomerDAO();
     }
 
-    // ===== Vores metoder (bruges af controllers) =====
+    //Vores metoder bruges af controllers
 
     public Customer register(String name, String email, String password) {
         Customer existing = customerDAO.getByEmail(email);
@@ -47,7 +47,7 @@ public class AuthService implements ISecurityDAO {
         return customerDAO.update(customer);
     }
 
-    // ===== ISecurityDAO-implementering (delegate-metoder) =====
+
 
     @Override
     public Customer createUser(String name, String email, String password) {

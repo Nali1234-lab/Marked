@@ -21,7 +21,7 @@ public class CatalogService {
         this.variantDAO = new VariantDAO();
     }
 
-    // ===== CATEGORY =====
+    //CATEGORY
     public List<Category> getAllCategories() { return categoryDAO.getAll(); }
 
     public Category createCategory(String name) {
@@ -38,7 +38,7 @@ public class CatalogService {
         categoryDAO.delete(categoryId);
     }
 
-    // ===== PRODUCT =====
+    // PRODUCT
     public List<Product> getProductsByCategory(Long categoryId) { return productDAO.getByCategory(categoryId); }
 
     public List<Product> getAllProducts() { return productDAO.getAll(); }
@@ -69,10 +69,10 @@ public class CatalogService {
 
     public void deleteProduct(Long productId) { productDAO.delete(productId); }
 
-    // ===== VARIANT =====
+    // VARIANT
     public List<Variant> getVariantsByProduct(Long productId) { return variantDAO.getByProductId(productId); }
 
-    // NY: Opret variant med productId og designSlot
+    // Opret variant med productId og designSlot
     public Variant createVariant(Long productId, String name, double price, int stock, DesignSlot designSlot) {
         Product product = productDAO.getById(productId);
         if (product == null) {

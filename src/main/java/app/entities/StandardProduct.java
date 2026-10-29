@@ -11,13 +11,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "standard_products")
-// "extends Product": arver alle felter og adfærd fra Product (id, name, category)
+
 public class StandardProduct extends Product {
 
-    private double price; // den faste, synlige pris - unik for netop StandardProduct
+    private double price;
 
-    @Override // fortæller Java: "dette ERSTATTER Product's abstrakte version"
+    @Override
     public double calculatePrice() {
-        return price; // simplest muligt: prisen ER bare selve prisen
-    }
+        return price; }
 }

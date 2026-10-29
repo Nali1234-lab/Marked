@@ -32,7 +32,7 @@ public class Customer implements ISecurityUser {
     @Column(nullable = false)
     private Role role;
 
-    // NY: Constructor der hasher passwordet med det samme!
+    // Constructor der hasher passwordet med det samme!
     public Customer(String name, String email, String plainPassword, Role role) {
         this.name = name;
         this.email = email;
@@ -40,7 +40,7 @@ public class Customer implements ISecurityUser {
         this.role = role;
     }
 
-    // ===== ISecurityUser-implementering =====
+
     @Override
     public Set<String> getRolesAsStrings() {
         if (role == null) return Set.of();

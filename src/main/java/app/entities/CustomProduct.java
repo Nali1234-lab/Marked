@@ -20,7 +20,7 @@ public class CustomProduct extends Product {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "custom_product_materials",   // ← samme tabel-navn som før, så data bevares
+            name = "custom_product_materials",
             joinColumns = @JoinColumn(name = "custom_product_id"),
             inverseJoinColumns = @JoinColumn(name = "variant_id")
     )

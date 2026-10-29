@@ -11,6 +11,11 @@ public class CategoryDAO implements IDAO<Category, Long> {
 
     private final EntityManagerFactory emf;
 
+    // Bruges til tests
+    public CategoryDAO(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
     public CategoryDAO() {
         this.emf = HibernateConfig.getEntityManagerFactory();
     }

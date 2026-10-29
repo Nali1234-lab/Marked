@@ -13,6 +13,11 @@ public class OrderDAO implements IDAO<Order, Long> {
 
     private final EntityManagerFactory emf;
 
+    // Bruges til tests
+    public OrderDAO(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
     public OrderDAO() {
         this.emf = HibernateConfig.getEntityManagerFactory();
     }
@@ -71,7 +76,7 @@ public class OrderDAO implements IDAO<Order, Long> {
         }
     }
 
-    // Matcher: "admin vil kunne se alle betalte ordrer"
+    // admin vil kunne se alle betalte ordrer
     public List<Order> getAllPaid() {
         try (EntityManager em = emf.createEntityManager()) {
             List<Order> orders = em.createQuery(
@@ -83,7 +88,7 @@ public class OrderDAO implements IDAO<Order, Long> {
         }
     }
 
-    // Matcher: "kunde vil kunne se status på sin ordre" (alle en kundes ordrer)
+    // kunde vil kunne se status på sin ordre (alle en kundes ordrer)
     public List<Order> getByCustomerId(Long customerId) {
         try (EntityManager em = emf.createEntityManager()) {
             List<Order> orders = em.createQuery(

@@ -11,11 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "products")
 @Inheritance(strategy = InheritanceType.JOINED)
-// JOINED: fælles felter (id, name, category) gemmes i "products"-tabellen,
-// mens hver underklasses egne felter gemmes i deres EGEN tabel, koblet via samme id
+
 public abstract class Product {
-    // "abstract" betyder: man kan ALDRIG skrive "new Product()" direkte,
-    // kun de konkrete underklasser (StandardProduct, CustomProduct)
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +26,4 @@ public abstract class Product {
     private Category category;
 
     public abstract double calculatePrice();
-    // "abstract" metode: en KONTRAKT der siger "enhver underklasse
-    // SKAL selv skrive sin egen udgave af denne metode"
 }

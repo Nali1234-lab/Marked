@@ -17,9 +17,8 @@ public class Populator {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
 
-        // ==========================================
+
         // 1. STANDARD PRODUKTER
-        // ==========================================
 
         Category damkoni = new Category();
         damkoni.setName("Grydelapper");
@@ -69,9 +68,8 @@ public class Populator {
         pishband2.setCategory(pishband);
         em.persist(pishband2);
 
-        // ==========================================
+
         // 2. CUSTOM PRODUKTER
-        // ==========================================
 
         Category toej = new Category();
         toej.setName("Tøj");
