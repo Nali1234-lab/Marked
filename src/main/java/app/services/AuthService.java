@@ -14,8 +14,8 @@ public class AuthService implements ISecurityDAO {
         this.customerDAO = new CustomerDAO();
     }
 
-    //Vores metoder bruges af controllers
 
+    @Override
     public Customer register(String name, String email, String password) {
         Customer existing = customerDAO.getByEmail(email);
         if (existing != null) {
@@ -26,7 +26,7 @@ public class AuthService implements ISecurityDAO {
         Customer customer = new Customer(name, email, password, Role.CUSTOMER);
         return customerDAO.create(customer);
     }
-
+    @Override
     public Customer login(String email, String password) {
         Customer customer = customerDAO.getByEmail(email);
         if (customer == null || !customer.verifyPassword(password)) {
@@ -47,17 +47,6 @@ public class AuthService implements ISecurityDAO {
         return customerDAO.update(customer);
     }
 
-
-
-    @Override
-    public Customer createUser(String name, String email, String password) {
-        return register(name, email, password);
-    }
-
-    @Override
-    public Customer getVerifiedUser(String email, String password) {
-        return login(email, password);
-    }
 
     @Override
     public Customer addUserRole(String email, Role role) {
