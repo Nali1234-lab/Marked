@@ -4,6 +4,7 @@ import app.daos.ProductConfigurationDAO;
 import app.daos.ProductDAO;
 import app.daos.VariantDAO;
 import app.dtos.*;
+import app.dtos.DesignPreviewRequest;
 import app.entities.*;
 import app.exceptions.ApiException;
 import io.javalin.http.Context;

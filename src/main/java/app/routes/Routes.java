@@ -1,5 +1,6 @@
 package app.routes;
 
+import app.controllers.HealthController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -14,8 +15,11 @@ public class Routes {
 
     public EndpointGroup getRoutes() {
         return () -> {
-            // Sundhedstjek (offentlig)
-            get("/auth/healthcheck", ctx -> ctx.json(java.util.Map.of("status", "superrrr ok")));
+            // Opret instansen øverst i klassen (hvis den ikke er der)
+            final HealthController healthController = new HealthController();
+
+// Inde i getRoutes():
+            get("/health", healthController::healthCheck);
 
             // Ruterne
             path("/auth", customerRoute.getAuthRoutes());

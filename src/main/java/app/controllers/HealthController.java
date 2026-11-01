@@ -1,16 +1,10 @@
 package app.controllers;
 
-import io.javalin.apibuilder.EndpointGroup;
-
-import static io.javalin.apibuilder.ApiBuilder.get;
+import io.javalin.http.Context;
 
 public class HealthController {
 
-    public EndpointGroup getRoutes() {
-        return () -> {
-            get("/api/health", ctx -> {
-                ctx.json(java.util.Map.of("status", "ok"));
-            });
-        };
+    public void healthCheck(Context ctx) {
+        ctx.json(java.util.Map.of("status", "ok"));
     }
 }

@@ -1,6 +1,10 @@
 package app.controllers;
 
 import app.dtos.*;
+import app.dtos.CreateCategoryRequest;
+import app.dtos.CreateProductRequest;
+import app.dtos.CreateVariantRequest;
+import app.dtos.UpdatePriceRequest;
 import app.entities.*;
 import app.exceptions.ApiException;
 import app.services.CatalogService;
